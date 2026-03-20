@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAutoSave } from "./hooks/useAutoSave";
 import { useBootstrap } from "./hooks/useBootstrap";
+import { useNativeBackButton } from "./hooks/useNativeBackButton";
 import { useUIStore } from "./stores/useUIStore";
 import { ScreenChallenges } from "./screens/Screen_Challenges";
 import { ScreenComplete } from "./screens/Screen_Complete";
@@ -13,7 +14,7 @@ import { ScreenPopupGeneric } from "./screens/Screen_Popup_Generic";
 import { ScreenSettings } from "./screens/Screen_Settings";
 import { ScreenSplash } from "./screens/Screen_Splash";
 
-const transition = { duration: 0.22 };
+const transition = { duration: 0.16, ease: "easeOut" as const };
 
 function ActiveScreen() {
   const active = useUIStore((s) => s.activeScreen);
@@ -40,21 +41,25 @@ function ActiveScreen() {
 export default function App() {
   useBootstrap();
   useAutoSave();
+  useNativeBackButton();
   const active = useUIStore((s) => s.activeScreen);
 
   return (
     <>
-      <AnimatePresence mode="wait">
+      <main className="mx-auto min-h-screen w-full max-w-lg overflow-x-hidden">
+      <AnimatePresence initial={false} mode="sync">
         <motion.div
           key={active}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, scale: 0.995 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.005 }}
           transition={transition}
+          className="will-change-[opacity,transform]"
         >
           <ActiveScreen />
         </motion.div>
       </AnimatePresence>
+      </main>
       <ScreenPausePopup />
       <ScreenExitConfirmPopup />
       <ScreenPopupGeneric />

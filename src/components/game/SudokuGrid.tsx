@@ -14,6 +14,8 @@ const CellButton = memo(function CellButton({
   wrong,
   boxBorderRight,
   boxBorderBottom,
+  borderTopWidth,
+  borderLeftWidth,
 }: {
   row: number;
   col: number;
@@ -25,26 +27,33 @@ const CellButton = memo(function CellButton({
   wrong: boolean;
   boxBorderRight: boolean;
   boxBorderBottom: boolean;
+  borderTopWidth: number;
+  borderLeftWidth: number;
 }) {
   const selectCell = useSudokuStore((s) => s.selectCell);
   const size = useSudokuStore((s) => s.size);
 
   return (
     <motion.button
-      layout
       whileTap={{ scale: 0.92 }}
       onClick={() => selectCell(row, col)}
       className={clsx(
-        "relative aspect-square w-full border border-slate-300/60 text-[var(--text)]",
-        "transition-all duration-200",
+        "relative block aspect-square w-full text-[var(--text)]",
+        "appearance-none transition-colors duration-150",
         selected && "z-10 shadow-glow",
         highlighted && !selected && "bg-sky-100/60",
         fixed && "bg-slate-200/70 font-bold",
         wrong && "animate-pulse bg-red-200 text-red-700",
-        boxBorderRight && "border-r-4 border-r-slate-500/70",
-        boxBorderBottom && "border-b-4 border-b-slate-500/70",
       )}
-      style={{ fontSize: `${Math.max(15, 28 - size)}px` }}
+      style={{
+        fontSize: `${Math.max(15, 28 - size)}px`,
+        borderStyle: "solid",
+        borderColor: "rgba(71, 85, 105, 0.65)",
+        borderTopWidth,
+        borderLeftWidth,
+        borderRightWidth: boxBorderRight ? 3 : 1,
+        borderBottomWidth: boxBorderBottom ? 3 : 1,
+      }}
       aria-label={`row ${row + 1} col ${col + 1}`}
     >
       {value !== 0 ? (
@@ -87,7 +96,7 @@ export const SudokuGrid = () => {
   return (
     <div
       className={clsx(
-        "mx-auto grid w-full max-w-[23.5rem] overflow-hidden rounded-2xl border-2 border-slate-700/50 bg-white/70 shadow-xl",
+        "mx-auto grid w-full max-w-[23.5rem] overflow-hidden rounded-2xl border-2 border-slate-700/70 bg-white/70 shadow-xl",
         size === 3 && "max-w-[14rem]",
       )}
       style={{ gridTemplateColumns: `repeat(${size}, minmax(0,1fr))` }}
@@ -114,6 +123,8 @@ export const SudokuGrid = () => {
               wrong={Boolean(errorHighlight && cell.wrongFlash)}
               boxBorderRight={(colIndex + 1) % boxCols === 0 && colIndex + 1 !== size}
               boxBorderBottom={(rowIndex + 1) % boxRows === 0 && rowIndex + 1 !== size}
+              borderTopWidth={rowIndex === 0 ? 2 : 0}
+              borderLeftWidth={colIndex === 0 ? 2 : 0}
             />
           );
         }),
