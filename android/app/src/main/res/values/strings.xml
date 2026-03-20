@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sudoku Premium</string>
+    <string name="title_activity_main">Sudoku Premium</string>
+    <string name="package_name">com.sudoku.premium</string>
+    <string name="custom_url_scheme">com.sudoku.premium</string>
+</resources>
